@@ -180,8 +180,7 @@ def moveFile(sourcePath, destinationDir):
 
 if __name__ == '__main__':
     import argparse
-    description = ("List Guitar Pro files containing three tracks: "
-                   "bass, guitar and drums.")
+    description = ("Just a small script to check all the tabs in a folder and move them to another directory according to the guitar tuning.")
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('source',
                         metavar='SOURCE',
