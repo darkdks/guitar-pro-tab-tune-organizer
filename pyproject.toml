@@ -10,6 +10,12 @@ requires-python = ">=3.7"
 [project.scripts]
 guitar-pro-organize-tabs = "organize_tabs:cli"
 
+[project.optional-dependencies]
+tests = ["pytest"]
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["organize_tabs"]
