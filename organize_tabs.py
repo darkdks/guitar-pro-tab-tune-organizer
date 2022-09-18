@@ -167,18 +167,19 @@ def move_tab_file(source_path, destination_dir):
 
     if not os.path.exists(destination_dir):
         os.makedirs(destination_dir)
-        
+
     if os.path.exists(dest_path):
-        new_file_name = os.path.splitext(file_name)[0] + str(random.randint(0, 100000)) + os.path.splitext(file_name)[1]   
+        new_file_name = os.path.splitext(file_name)[0] + str(random.randint(0, 100000)) + os.path.splitext(file_name)[1]
         os.rename(source_path, os.path.join(os.path.dirname(source_path), new_file_name))
-        shutil.move(os.path.join(os.path.dirname(source_path), new_file_name), destination_dir)         
+        shutil.move(os.path.join(os.path.dirname(source_path), new_file_name), destination_dir)
         print(f'Moving Tab {os.path.basename(source_path)} to {new_file_name}')
     else:
         shutil.move(source_path, destination_dir)
 
 
-if __name__ == '__main__':
+def cli():
     import argparse
+
     description = ("Just a small script to check all the tabs in a folder and move them to another directory according to the guitar tuning.")
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('source',
@@ -193,3 +194,8 @@ if __name__ == '__main__':
     kwargs = dict(args._get_kwargs())
     print(kwargs)
     main(**kwargs)
+    exit(0)
+
+
+if __name__ == '__main__':
+    cli()
