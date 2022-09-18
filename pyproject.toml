@@ -1,0 +1,15 @@
+[project]
+name = "guitar-pro-tab-tune-organizer"
+version = "0.0.1"
+dependencies = [
+    "PyGuitarPro~=0.9.2",
+]
+readme = "README.md"
+requires-python = ">=3.7"
+
+[project.scripts]
+guitar-pro-tab-tune-organizer = "organize_tabs:cli"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
