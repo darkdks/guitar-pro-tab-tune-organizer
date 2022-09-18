@@ -127,54 +127,54 @@ def main(source, destination):
             except guitarpro.GPException as exc:
                 print("###This is not a supported Guitar Pro file:", guitar_pro_path, ":", exc)
             else:
-                guitar_tuning = getGuitarTuning(tab)
+                guitar_tuning = get_guitar_tuning(tab)
                 print('\nTab', ':', os.path.basename(guitar_pro_path), 'Tunning', ':', ' '.join(guitar_tuning))
                 try:
-                    moveFile(guitar_pro_path, os.path.join(destination, ' '.join(guitar_tuning)))
+                    move_tab_file(guitar_pro_path, os.path.join(destination, ' '.join(guitar_tuning)))
                 except:
                     print('Falied to move tab')
     print("\nDone!")
 
 
-def getGuitarTuning(tab):
+def get_guitar_tuning(tab):
     guitar_tune = []
     for track in tab.tracks:
         if not track.isPercussionTrack and len(track.strings) > 5:
             for string in track.strings:
-                guitar_tune.append(tuneValueToNote(string.value, True))
+                guitar_tune.append(tune_value_to_note(string.value, True))
             break
 
     guitar_tune.reverse()
     return guitar_tune
 
 
-def tuneValueToNote(value, shortWay):
+def tune_value_to_note(value, short_way):
     for value_note in value_note_list:
         if value_note["value"] == value:
-            if shortWay and value_note["note"][1].isdigit():
+            if short_way and value_note["note"][1].isdigit():
                 return value_note["note"][0]
             else:
                 return value_note["note"]
     return "_"
 
 
-def moveFile(sourcePath, destinationDir):
-    file_name = os.path.basename(sourcePath)
-    dest_path = os.path.join(destinationDir, file_name)
+def move_tab_file(source_path, destination_dir):
+    file_name = os.path.basename(source_path)
+    dest_path = os.path.join(destination_dir, file_name)
 
-    if os.path.normpath(sourcePath) == os.path.normpath(dest_path):
-        return print(f'Ignoring {destinationDir} because the source and destination is the same')
+    if os.path.normpath(source_path) == os.path.normpath(dest_path):
+        return print(f'Ignoring {destination_dir} because the source and destination is the same')
 
-    if not os.path.exists(destinationDir):
-        os.makedirs(destinationDir)
+    if not os.path.exists(destination_dir):
+        os.makedirs(destination_dir)
         
     if os.path.exists(dest_path):
         new_file_name = os.path.splitext(file_name)[0] + str(random.randint(0, 100000)) + os.path.splitext(file_name)[1]   
-        os.rename(sourcePath, os.path.join(os.path.dirname(sourcePath), new_file_name))
-        shutil.move(os.path.join(os.path.dirname(sourcePath), new_file_name), destinationDir)         
-        print(f'Moving Tab {os.path.basename(sourcePath)} to {new_file_name}')
+        os.rename(source_path, os.path.join(os.path.dirname(source_path), new_file_name))
+        shutil.move(os.path.join(os.path.dirname(source_path), new_file_name), destination_dir)         
+        print(f'Moving Tab {os.path.basename(source_path)} to {new_file_name}')
     else:
-        shutil.move(sourcePath, destinationDir)
+        shutil.move(source_path, destination_dir)
 
 
 if __name__ == '__main__':
