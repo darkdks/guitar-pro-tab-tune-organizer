@@ -5,7 +5,7 @@ import guitarpro
 import shutil
 import random
 
-valueXNoteList = [
+value_note_list = [
     {"value": 127, "note": "G9"},
     {"value": 126, "note": "F#"},
     {"value": 125, "note": "F9"},
@@ -117,63 +117,62 @@ valueXNoteList = [
 
 def main(source, destination):
     print("Filtering...\n")
-    supportedExtensions = '*.gp[345]'
+    supported_extensions = '*.gp[345]'
 
     for dirpath, dirs, files in os.walk(source):
-        for file in fnmatch.filter(files, supportedExtensions):
-            guitarProPath = os.path.join(dirpath, file)
+        for file in fnmatch.filter(files, supported_extensions):
+            guitar_pro_path = os.path.join(dirpath, file)
             try:
-                tab = guitarpro.parse(guitarProPath)
+                tab = guitarpro.parse(guitar_pro_path)
             except guitarpro.GPException as exc:
-                print("###This is not a supported Guitar Pro file:",
-                      guitarProPath, ":", exc)
+                print("###This is not a supported Guitar Pro file:", guitar_pro_path, ":", exc)
             else:
-                guitarTuning = getGuitarTuning(tab)
-                print('\nTab', ':', os.path.basename(guitarProPath), 'Tunning', ':', ' '.join(guitarTuning))
+                guitar_tuning = getGuitarTuning(tab)
+                print('\nTab', ':', os.path.basename(guitar_pro_path), 'Tunning', ':', ' '.join(guitar_tuning))
                 try:
-                    moveFile(guitarProPath, os.path.join(destination, ' '.join(guitarTuning)))
+                    moveFile(guitar_pro_path, os.path.join(destination, ' '.join(guitar_tuning)))
                 except:
                     print('Falied to move tab')
     print("\nDone!")
 
 
 def getGuitarTuning(tab):
-    guitarTune = []
+    guitar_tune = []
     for track in tab.tracks:
         if not track.isPercussionTrack and len(track.strings) > 5:
             for string in track.strings:
-                guitarTune.append(tuneValueToNote(string.value, True))
+                guitar_tune.append(tuneValueToNote(string.value, True))
             break
 
-    guitarTune.reverse()
-    return guitarTune
+    guitar_tune.reverse()
+    return guitar_tune
 
 
 def tuneValueToNote(value, shortWay):
-    for valueXNote in valueXNoteList:
-        if valueXNote["value"] == value:
-            if shortWay and valueXNote["note"][1].isdigit():
-                return valueXNote["note"][0]
+    for value_note in value_note_list:
+        if value_note["value"] == value:
+            if shortWay and value_note["note"][1].isdigit():
+                return value_note["note"][0]
             else:
-                return valueXNote["note"]
+                return value_note["note"]
     return "_"
 
 
 def moveFile(sourcePath, destinationDir):
-    fileName = os.path.basename(sourcePath)
-    destinationPath = os.path.join(destinationDir, fileName)
+    file_name = os.path.basename(sourcePath)
+    dest_path = os.path.join(destinationDir, file_name)
 
-    if os.path.normpath(sourcePath) == os.path.normpath(destinationPath):
+    if os.path.normpath(sourcePath) == os.path.normpath(dest_path):
         return print(f'Ignoring {destinationDir} because the source and destination is the same')
 
     if not os.path.exists(destinationDir):
         os.makedirs(destinationDir)
         
-    if os.path.exists(destinationPath):
-        newFileName = os.path.splitext(fileName)[0] + str(random.randint(0, 100000)) + os.path.splitext(fileName)[1]   
-        os.rename(sourcePath, os.path.join(os.path.dirname(sourcePath), newFileName))
-        shutil.move(os.path.join(os.path.dirname(sourcePath), newFileName), destinationDir)         
-        print(f'Moving Tab {os.path.basename(sourcePath)} to {newFileName}')
+    if os.path.exists(dest_path):
+        new_file_name = os.path.splitext(file_name)[0] + str(random.randint(0, 100000)) + os.path.splitext(file_name)[1]   
+        os.rename(sourcePath, os.path.join(os.path.dirname(sourcePath), new_file_name))
+        shutil.move(os.path.join(os.path.dirname(sourcePath), new_file_name), destinationDir)         
+        print(f'Moving Tab {os.path.basename(sourcePath)} to {new_file_name}')
     else:
         shutil.move(sourcePath, destinationDir)
 
