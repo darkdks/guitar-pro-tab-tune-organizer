@@ -8,7 +8,7 @@ readme = "README.md"
 requires-python = ">=3.7"
 
 [project.scripts]
-guitar-pro-tab-tune-organizer = "organize_tabs:cli"
+guitar-pro-organize-tabs = "organize_tabs:cli"
 
 [build-system]
 requires = ["setuptools"]
