@@ -152,7 +152,7 @@ def getGuitarTuning(tab):
 def tuneValueToNote(value, shortWay):
     for valueXNote in valueXNoteList:
         if valueXNote["value"] == value:
-            if shortWay & valueXNote["note"][1].isdigit():
+            if shortWay and valueXNote["note"][1].isdigit():
                 return valueXNote["note"][0]
             else:
                 return valueXNote["note"]
@@ -161,15 +161,15 @@ def tuneValueToNote(value, shortWay):
 
 def moveFile(sourcePath, destinationDir):
     fileName = os.path.basename(sourcePath)
-    distinationPath = os.path.join(destinationDir, fileName)
+    destinationPath = os.path.join(destinationDir, fileName)
 
-    if os.path.normpath(sourcePath) == os.path.normpath(distinationPath):
-        return print(f'Ignoring {destinationDir} because the source e destination is the same')
+    if os.path.normpath(sourcePath) == os.path.normpath(destinationPath):
+        return print(f'Ignoring {destinationDir} because the source and destination is the same')
 
     if not os.path.exists(destinationDir):
         os.makedirs(destinationDir)
         
-    if os.path.exists(distinationPath):
+    if os.path.exists(destinationPath):
         newFileName = os.path.splitext(fileName)[0] + str(random.randint(0, 100000)) + os.path.splitext(fileName)[1]   
         os.rename(sourcePath, os.path.join(os.path.dirname(sourcePath), newFileName))
         shutil.move(os.path.join(os.path.dirname(sourcePath), newFileName), destinationDir)         
