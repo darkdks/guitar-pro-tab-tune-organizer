@@ -1,199 +1,213 @@
-from fileinput import filename
 import os
-import fnmatch
-import guitarpro
-import shutil
 import random
+from pathlib import Path
 
-value_note_list = [
-    {"value": 127, "note": "G9"},
-    {"value": 126, "note": "F#"},
-    {"value": 125, "note": "F9"},
-    {"value": 124, "note": "E9"},
-    {"value": 123, "note": "D#"},
-    {"value": 122, "note": "D9"},
-    {"value": 121, "note": "C#"},
-    {"value": 120, "note": "C9"},
-    {"value": 119, "note": "B8"},
-    {"value": 118, "note": "A#"},
-    {"value": 117, "note": "A8"},
-    {"value": 116, "note": "G#"},
-    {"value": 115, "note": "G8"},
-    {"value": 114, "note": "F#"},
-    {"value": 113, "note": "F8"},
-    {"value": 112, "note": "E8"},
-    {"value": 111, "note": "D#"},
-    {"value": 110, "note": "D8"},
-    {"value": 109, "note": "C#"},
-    {"value": 108, "note": "C8"},
-    {"value": 107, "note": "B7"},
-    {"value": 106, "note": "A#"},
-    {"value": 105, "note": "A7"},
-    {"value": 104, "note": "G#"},
-    {"value": 103, "note": "G7"},
-    {"value": 102, "note": "F#"},
-    {"value": 101, "note": "F7"},
-    {"value": 100, "note": "E7"},
-    {"value": 99, "note": "D#"},
-    {"value": 98, "note": "D7"},
-    {"value": 97, "note": "C#"},
-    {"value": 96, "note": "C7"},
-    {"value": 95, "note": "B6"},
-    {"value": 94, "note": "A#"},
-    {"value": 93, "note": "A6"},
-    {"value": 92, "note": "G#"},
-    {"value": 91, "note": "G6"},
-    {"value": 90, "note": "F#"},
-    {"value": 89, "note": "F6"},
-    {"value": 88, "note": "E6"},
-    {"value": 87, "note": "D#"},
-    {"value": 86, "note": "D6"},
-    {"value": 85, "note": "C#"},
-    {"value": 84, "note": "C6"},
-    {"value": 83, "note": "B5"},
-    {"value": 82, "note": "A#"},
-    {"value": 81, "note": "A5"},
-    {"value": 80, "note": "G#"},
-    {"value": 79, "note": "G5"},
-    {"value": 78, "note": "F#"},
-    {"value": 77, "note": "F5"},
-    {"value": 76, "note": "E5"},
-    {"value": 75, "note": "D#"},
-    {"value": 74, "note": "D5"},
-    {"value": 73, "note": "C#"},
-    {"value": 72, "note": "C5"},
-    {"value": 71, "note": "B4"},
-    {"value": 70, "note": "A#"},
-    {"value": 69, "note": "A4"},
-    {"value": 68, "note": "G#"},
-    {"value": 67, "note": "G4"},
-    {"value": 66, "note": "F#"},
-    {"value": 65, "note": "F4"},
-    {"value": 64, "note": "E4"},
-    {"value": 63, "note": "D#"},
-    {"value": 62, "note": "D4"},
-    {"value": 61, "note": "C#"},
-    {"value": 60, "note": "C4"},
-    {"value": 59, "note": "B3"},
-    {"value": 58, "note": "A#"},
-    {"value": 57, "note": "A3"},
-    {"value": 56, "note": "G#"},
-    {"value": 55, "note": "G3"},
-    {"value": 54, "note": "F#"},
-    {"value": 53, "note": "F3"},
-    {"value": 52, "note": "E3"},
-    {"value": 51, "note": "D#"},
-    {"value": 50, "note": "D3"},
-    {"value": 49, "note": "C#"},
-    {"value": 48, "note": "C3"},
-    {"value": 47, "note": "B2"},
-    {"value": 46, "note": "A#"},
-    {"value": 45, "note": "A2"},
-    {"value": 44, "note": "G#"},
-    {"value": 43, "note": "G2"},
-    {"value": 42, "note": "F#"},
-    {"value": 41, "note": "F2"},
-    {"value": 40, "note": "E2"},
-    {"value": 39, "note": "D#"},
-    {"value": 38, "note": "D2"},
-    {"value": 37, "note": "C#"},
-    {"value": 36, "note": "C2"},
-    {"value": 35, "note": "B1"},
-    {"value": 34, "note": "A#"},
-    {"value": 33, "note": "A1"},
-    {"value": 32, "note": "G#"},
-    {"value": 31, "note": "G1"},
-    {"value": 30, "note": "F#"},
-    {"value": 29, "note": "F1"},
-    {"value": 28, "note": "E1"},
-    {"value": 27, "note": "D#"},
-    {"value": 26, "note": "D1"},
-    {"value": 25, "note": "C#"},
-    {"value": 24, "note": "C1"},
-    {"value": 23, "note": "B0"},
-    {"value": 22, "note": "A#"},
-    {"value": 21, "note": "A0"}]
+import guitarpro
+
+VALUE_NOTE_MAP = {
+    21: 'A0',
+    22: 'A#',
+    23: 'B0',
+    24: 'C1',
+    25: 'C#',
+    26: 'D1',
+    27: 'D#',
+    28: 'E1',
+    29: 'F1',
+    30: 'F#',
+    31: 'G1',
+    32: 'G#',
+    33: 'A1',
+    34: 'A#',
+    35: 'B1',
+    36: 'C2',
+    37: 'C#',
+    38: 'D2',
+    39: 'D#',
+    40: 'E2',
+    41: 'F2',
+    42: 'F#',
+    43: 'G2',
+    44: 'G#',
+    45: 'A2',
+    46: 'A#',
+    47: 'B2',
+    48: 'C3',
+    49: 'C#',
+    50: 'D3',
+    51: 'D#',
+    52: 'E3',
+    53: 'F3',
+    54: 'F#',
+    55: 'G3',
+    56: 'G#',
+    57: 'A3',
+    58: 'A#',
+    59: 'B3',
+    60: 'C4',
+    61: 'C#',
+    62: 'D4',
+    63: 'D#',
+    64: 'E4',
+    65: 'F4',
+    66: 'F#',
+    67: 'G4',
+    68: 'G#',
+    69: 'A4',
+    70: 'A#',
+    71: 'B4',
+    72: 'C5',
+    73: 'C#',
+    74: 'D5',
+    75: 'D#',
+    76: 'E5',
+    77: 'F5',
+    78: 'F#',
+    79: 'G5',
+    80: 'G#',
+    81: 'A5',
+    82: 'A#',
+    83: 'B5',
+    84: 'C6',
+    85: 'C#',
+    86: 'D6',
+    87: 'D#',
+    88: 'E6',
+    89: 'F6',
+    90: 'F#',
+    91: 'G6',
+    92: 'G#',
+    93: 'A6',
+    94: 'A#',
+    95: 'B6',
+    96: 'C7',
+    97: 'C#',
+    98: 'D7',
+    99: 'D#',
+    100: 'E7',
+    101: 'F7',
+    102: 'F#',
+    103: 'G7',
+    104: 'G#',
+    105: 'A7',
+    106: 'A#',
+    107: 'B7',
+    108: 'C8',
+    109: 'C#',
+    110: 'D8',
+    111: 'D#',
+    112: 'E8',
+    113: 'F8',
+    114: 'F#',
+    115: 'G8',
+    116: 'G#',
+    117: 'A8',
+    118: 'A#',
+    119: 'B8',
+    120: 'C9',
+    121: 'C#',
+    122: 'D9',
+    123: 'D#',
+    124: 'E9',
+    125: 'F9',
+    126: 'F#',
+    127: 'G9',
+}
 
 
 def main(source, destination):
-    print("Filtering...\n")
-    supported_extensions = '*.gp[345]'
+    dest = Path(destination)
 
-    for dirpath, dirs, files in os.walk(source):
-        for file in fnmatch.filter(files, supported_extensions):
-            guitar_pro_path = os.path.join(dirpath, file)
+    print('Filtering...')
+    for path in Path(source).glob('**/*.gp[345]'):
+        try:
+            tab = guitarpro.parse(path)
+        except guitarpro.GPException as e:
+            print(f'### This is not a supported Guitar Pro file: {path} : {e}')
+        else:
+            guitar_tuning = get_guitar_tuning(tab)
             try:
-                tab = guitarpro.parse(guitar_pro_path)
-            except guitarpro.GPException as exc:
-                print("###This is not a supported Guitar Pro file:", guitar_pro_path, ":", exc)
-            else:
-                guitar_tuning = get_guitar_tuning(tab)
-                print('\nTab', ':', os.path.basename(guitar_pro_path), 'Tunning', ':', ' '.join(guitar_tuning))
-                try:
-                    move_tab_file(guitar_pro_path, os.path.join(destination, ' '.join(guitar_tuning)))
-                except:
-                    print('Falied to move tab')
-    print("\nDone!")
+                move_tab_file(path, dest / guitar_tuning)
+            except Exception:
+                print('Falied to move tab')
+
+    print('Done!')
 
 
 def get_guitar_tuning(tab):
     guitar_tune = []
     for track in tab.tracks:
         if not track.isPercussionTrack and len(track.strings) > 5:
-            for string in track.strings:
-                guitar_tune.append(tune_value_to_note(string.value, True))
+            guitar_tune.extend(
+                tune_value_to_note(string.value)
+                for string in reversed(track.strings)
+            )
             break
 
-    guitar_tune.reverse()
-    return guitar_tune
+    return ' '.join(guitar_tune)
 
 
-def tune_value_to_note(value, short_way):
-    for value_note in value_note_list:
-        if value_note["value"] == value:
-            if short_way and value_note["note"][1].isdigit():
-                return value_note["note"][0]
-            else:
-                return value_note["note"]
-    return "_"
+def tune_value_to_note(value, short_way=True, default='_'):
+    try:
+        note = VALUE_NOTE_MAP[value]
+    except KeyError:
+        return default
+
+    if short_way and note[1].isdigit():
+        return note[0]
+
+    return note
 
 
-def move_tab_file(source_path, destination_dir):
-    file_name = os.path.basename(source_path)
-    dest_path = os.path.join(destination_dir, file_name)
+def move_tab_file(source, destination):
+    source = Path(source)
+    dest = Path(destination) / source.name
 
-    if os.path.normpath(source_path) == os.path.normpath(dest_path):
-        return print(f'Ignoring {destination_dir} because the source and destination is the same')
+    if source == dest:
+        print(
+            f'Ignoring {destination} because the source and destination is the same'
+        )
+        return
 
-    if not os.path.exists(destination_dir):
-        os.makedirs(destination_dir)
+    dest.parent.mkdir(parents=True, exist_ok=True)
 
-    if os.path.exists(dest_path):
-        new_file_name = os.path.splitext(file_name)[0] + str(random.randint(0, 100000)) + os.path.splitext(file_name)[1]
-        os.rename(source_path, os.path.join(os.path.dirname(source_path), new_file_name))
-        shutil.move(os.path.join(os.path.dirname(source_path), new_file_name), destination_dir)
-        print(f'Moving Tab {os.path.basename(source_path)} to {new_file_name}')
-    else:
-        shutil.move(source_path, destination_dir)
+    if dest.exists():
+        new_filename = _new_filename(dest)
+        dest = dest.parent / new_filename
+
+    print(f'Moving Tab from {source} to {dest}')
+    source.rename(dest)
+
+
+def _new_filename(filename):
+    path, ext = os.path.splitext(filename)
+    return f'{path}{random.randint(0, 10000)}{ext}'
 
 
 def cli():
     import argparse
 
-    description = ("Just a small script to check all the tabs in a folder and move them to another directory according to the guitar tuning.")
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('source',
-                        metavar='SOURCE',
-                        help='path to the source tabs folder')
-
-    parser.add_argument('destination',
-                        metavar='DESTINATION',
-                        help='path to the destination tabs folder')
+    parser = argparse.ArgumentParser(
+        description=(
+            'Just a small script to check all the tabs in a folder and '
+            'move them to another directory according to the guitar tuning.'
+        )
+    )
+    parser.add_argument(
+        'source',
+        metavar='SOURCE',
+        help='path to the source tabs folder',
+        type=Path,
+    )
+    parser.add_argument(
+        'destination',
+        metavar='DESTINATION',
+        help='path to the destination tabs folder',
+        type=Path,
+    )
 
     args = parser.parse_args()
-    kwargs = dict(args._get_kwargs())
-    print(kwargs)
-    main(**kwargs)
+    main(**vars(args))
     exit(0)
 
 
